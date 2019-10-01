@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <list>
+#include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -16,7 +18,7 @@ list<int> process5 = { 16, 24, 17, 21, 5, 36, 16, 26, 7, 31, 13, 28, 11, 21, 6, 
 list<int> process6 = { 11, 22, 4, 8, 5, 10, 6, 12, 7, 14, 9, 18, 12, 24, 15, 30, 8 };
 list<int> process7 = { 14, 46, 17, 41, 11, 42, 15, 21, 4, 32, 7, 19, 16, 33, 10 };
 list<int> process8 = { 4, 14, 5, 33, 6, 51, 14, 73, 16, 87, 6 };
-list<list<int>>process = { process1, process2, process3, process4, process5, process6, process7, process8 }; //creates a list of processes
+vector<list<int>>processQueue = { process1, process2, process3, process4, process5, process6, process7, process8 }; //creates a list of processes
 
 
 class fcfs {
@@ -28,20 +30,25 @@ public:
 	double getAvgWaitingTime();
 	double getAvgTurnaroundTime();
 	double getAvgResponseTime();
+	void enqueueWaitingTime(int & ioTime);
+	void setCurrentWaitingTime();
+	int getCurrentWaitingTime();
+	void updateCurrentWaitingTime(int & processingTime);
 private:
 	list<int> currProcess;
 	double cpuU;
 	double avgWaitingTime;
 	double avgTurnaroundTime;
 	double avgResponseTime;
+	queue<int> waitingTimes;
+	int currentWaitingTime;
 };
 
 fcfs::fcfs() {
 }
 
 void fcfs::setCurrProcess() {
-	currProcess = process.front();
-	process.pop_front();
+	currProcess = processQueue.front();
 }
 
 int fcfs::getCurrProcess() {
@@ -52,11 +59,54 @@ double fcfs::getCpuU() {
 	return cpuU;
 }
 
+void fcfs::enqueueWaitingTime(int & ioTime) {
+	waitingTimes.push(ioTime);
+}
+
+void fcfs::updateCurrentWaitingTime(int & processingTime) {
+	if (currentWaitingTime <= 0) {
+		currentWaitingTime = getCurrentWaitingTime();
+	}
+	else {
+		currentWaitingTime = currentWaitingTime - processingTime;
+	}
+}
+
+void fcfs::setCurrentWaitingTime() {
+	currentWaitingTime = waitingTimes.front();
+	waitingTimes.pop();
+}
+
+int fcfs::getCurrentWaitingTime() {
+	if (currentWaitingTime > 0) {
+		return currentWaitingTime;
+	}
+	else {
+		currentWaitingTime = waitingTimes.front();
+		waitingTimes.pop();
+		return currentWaitingTime;
+	}
+}
+
 int main() {
-	fcfs algorithm;
-	int numProcesses = process.size();
-	for (int i = 0; i < numProcesses; i++) {
-		algorithm.setCurrProcess();
-		cout << algorithm.getCurrProcess() << endl;
+	fcfs processor;
+	while (processQueue.size() > 0) {
+		for (int i = 0; i < processQueue.size(); i++) {
+			processQueue[i].pop_front();
+			processor.enqueueWaitingTime(processQueue[i].front());
+			processQueue[i].pop_front();
+			if (processQueue[i + 1].front() < processor.getCurrentWaitingTime()) {
+				processor.updateCurrentWaitingTime(processQueue[i + 1].front());
+				processQueue[i + 1].pop_front();
+				int time = 0;
+				for (int j = i + 2; time < processor.getCurrentWaitingTime(); j++) {
+					processor.updateCurrentWaitingTime(processQueue[j].front());
+					cout << processor.getCurrentWaitingTime() << endl;
+					processQueue[j].pop_front();
+					time = time + processQueue[j].front();
+					processQueue[j].pop_front();
+				}
+			}
+		}
 	}
 }
