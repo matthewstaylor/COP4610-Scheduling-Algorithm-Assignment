@@ -31,9 +31,11 @@ public:
 	double getAvgTurnaroundTime();
 	double getAvgResponseTime();
 	void enqueueWaitingTime(int & ioTime);
+	void dequeueWaitingTime();
 	void setCurrentWaitingTime();
 	int getCurrentWaitingTime();
 	void newCurrentWaitingTime(int & newTime);
+	void nextWaitingTime();
 	void updateCurrentWaitingTime(int & processingTime);
 	void initiateScheduler();
 private:
@@ -62,21 +64,25 @@ double fcfs::getCpuU() {
 }
 
 void fcfs::enqueueWaitingTime(int & ioTime) {
+	cout << "Added: " << ioTime << endl;
 	waitingTimes.push(ioTime);
 }
 
+void fcfs::dequeueWaitingTime() {
+	waitingTimes.pop();
+}
+
+void fcfs::nextWaitingTime() {
+	cout << waitingTimes.size() << endl;
+}
+
 void fcfs::updateCurrentWaitingTime(int & processingTime) {
+	currentWaitingTime = currentWaitingTime - processingTime;
 	if (currentWaitingTime <= 0) {
 		currentWaitingTime = getCurrentWaitingTime();
 	}
-	else {
-		currentWaitingTime = currentWaitingTime - processingTime;
-	}
 }
 
-void fcfs::newCurrentWaitingTime(int & newTime) {
-	currentWaitingTime = newTime;
-}
 
 void fcfs::setCurrentWaitingTime() {
 	currentWaitingTime = waitingTimes.front();
@@ -95,28 +101,44 @@ int fcfs::getCurrentWaitingTime() {
 }
 
 void fcfs::initiateScheduler() {
-	
+
 }
 
 int main() {
 	fcfs processor;
 	int i = 1;
-	
-	for (int j = 0; j < 9; j++) {
+	int numProcessesCompleted = 0;
+
+	for (int j = 0; j < processQueue.size(); j++) {
 		processQueue[j].pop_front();
 		processor.enqueueWaitingTime(processQueue[j].front());
 		processQueue[j].pop_front();
+		i = j;
 		while (processQueue[j].size() > 0) {
 			while (processQueue[i].front() <= processor.getCurrentWaitingTime()) {
-				cout << "Current process: " << i + 1 << "Waiting time: " << processor.getCurrentWaitingTime() << endl;
-				processor.updateCurrentWaitingTime(processQueue[i].front());
-				processQueue[i].pop_front();
+				cout << "Current process: " << i + 1 << " --- Waiting time: " << processor.getCurrentWaitingTime() << " --- Current burst time: " << processQueue[i].front() << endl;
+				processor.updateCurrentWaitingTime(processQueue[i].front()); //subtracts burst time from waiting time
+				if (processQueue[i].size() == 1) {
+					processQueue.erase(processQueue.begin() + i);
+					cout << "PROCESS " << i + 1 << " COMPLETE!" << endl;
+					i = 1;
+					break;
+				}
+				processQueue[i].pop_front(); //burst time complete
+				processor.enqueueWaitingTime(processQueue[i].front()); //queues up next IO time bc {burst time, IO time, burst time}
+				cout << "Num of IO times in queue: ";
+				processor.nextWaitingTime();
+				cout << endl;
+				processQueue[i].pop_front(); //removes IO time
 				i++;
+				if (i >= processQueue.size()) {
+					i = j;
+				}
 			}
-			processQueue[j].pop_front();
-			processor.newCurrentWaitingTime(processQueue[j].front());
-			i = j + 1;
+			processor.setCurrentWaitingTime();
+			cout << "-------------------------------------------------" << "\n\n";
 		}
 		processQueue.erase(processQueue.begin() + j);
+		cout << "PROCESS " << j << " COMPLETE!" << endl;
 	}
 }
