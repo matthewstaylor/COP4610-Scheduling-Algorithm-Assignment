@@ -1,7 +1,2 @@
 ﻿  cop4610SchedulerAssignment.cpp
-<<<<<<< HEAD
-z:\projects\cop4610schedulerassignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(94): warning C4018: '<': signed/unsigned mismatch
-  cop4610SchedulerAssignment.vcxproj -> Z:\projects\cop4610SchedulerAssignment\Debug\cop4610SchedulerAssignment.exe
-=======
   cop4610SchedulerAssignment.vcxproj -> C:\Users\mtayl\COP4610-Scheduling-Algorithm-Assignment\Debug\cop4610SchedulerAssignment.exe
->>>>>>> 760a8ca2ae3e0adcf4c23da02646bd885edb4765

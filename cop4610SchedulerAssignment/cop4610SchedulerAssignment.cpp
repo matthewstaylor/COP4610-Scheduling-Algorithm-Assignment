@@ -33,7 +33,9 @@ public:
 	void enqueueWaitingTime(int & ioTime);
 	void setCurrentWaitingTime();
 	int getCurrentWaitingTime();
+	void newCurrentWaitingTime(int & newTime);
 	void updateCurrentWaitingTime(int & processingTime);
+	void initiateScheduler();
 private:
 	list<int> currProcess;
 	double cpuU;
@@ -72,6 +74,10 @@ void fcfs::updateCurrentWaitingTime(int & processingTime) {
 	}
 }
 
+void fcfs::newCurrentWaitingTime(int & newTime) {
+	currentWaitingTime = newTime;
+}
+
 void fcfs::setCurrentWaitingTime() {
 	currentWaitingTime = waitingTimes.front();
 	waitingTimes.pop();
@@ -88,25 +94,32 @@ int fcfs::getCurrentWaitingTime() {
 	}
 }
 
+void fcfs::initiateScheduler() {
+	
+}
+
 int main() {
 	fcfs processor;
+	int i = 1;
+	
+	processQueue[0].pop_front();
+	processor.enqueueWaitingTime(processQueue[0].front());
+	processQueue[0].pop_front();
+	
 	while (processQueue.size() > 0) {
-		for (int i = 0; i < processQueue.size(); i++) {
-			processQueue[i].pop_front();
-			processor.enqueueWaitingTime(processQueue[i].front());
-			processQueue[i].pop_front();
-			if (processQueue[i + 1].front() < processor.getCurrentWaitingTime()) {
-				processor.updateCurrentWaitingTime(processQueue[i + 1].front());
-				processQueue[i + 1].pop_front();
-				int time = 0;
-				for (int j = i + 2; time < processor.getCurrentWaitingTime(); j++) {
-					processor.updateCurrentWaitingTime(processQueue[j].front());
-					cout << processor.getCurrentWaitingTime() << endl;
-					processQueue[j].pop_front();
-					time = time + processQueue[j].front();
-					processQueue[j].pop_front();
-				}
+		while (processQueue[i].front() > 0) {
+			if (processQueue[i].size() == 1) {
+				processQueue.erase(processQueue.begin() + i);
+				break;
 			}
+			cout << "Current process: " << i+1 << "Waiting time: " << processor.getCurrentWaitingTime() << endl;
+			processor.updateCurrentWaitingTime(processQueue[i].front());
+			processQueue[i].pop_front();
+			i++;
 		}
+		processQueue[0].pop_front();
+		cout << processor.getCurrentWaitingTime();
+		processor.newCurrentWaitingTime(processQueue[0].front());
+		i = 1;
 	}
 }
