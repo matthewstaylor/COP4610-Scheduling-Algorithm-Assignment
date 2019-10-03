@@ -102,24 +102,21 @@ int main() {
 	fcfs processor;
 	int i = 1;
 	
-	processQueue[0].pop_front();
-	processor.enqueueWaitingTime(processQueue[0].front());
-	processQueue[0].pop_front();
-	
-	while (processQueue.size() > 0) {
-		while (processQueue[i].front() > 0) {
-			if (processQueue[i].size() == 1) {
-				processQueue.erase(processQueue.begin() + i);
-				break;
+	for (int j = 0; j < 9; j++) {
+		processQueue[j].pop_front();
+		processor.enqueueWaitingTime(processQueue[j].front());
+		processQueue[j].pop_front();
+		while (processQueue[j].size() > 0) {
+			while (processQueue[i].front() <= processor.getCurrentWaitingTime()) {
+				cout << "Current process: " << i + 1 << "Waiting time: " << processor.getCurrentWaitingTime() << endl;
+				processor.updateCurrentWaitingTime(processQueue[i].front());
+				processQueue[i].pop_front();
+				i++;
 			}
-			cout << "Current process: " << i+1 << "Waiting time: " << processor.getCurrentWaitingTime() << endl;
-			processor.updateCurrentWaitingTime(processQueue[i].front());
-			processQueue[i].pop_front();
-			i++;
+			processQueue[j].pop_front();
+			processor.newCurrentWaitingTime(processQueue[j].front());
+			i = j + 1;
 		}
-		processQueue[0].pop_front();
-		cout << processor.getCurrentWaitingTime();
-		processor.newCurrentWaitingTime(processQueue[0].front());
-		i = 1;
+		processQueue.erase(processQueue.begin() + j);
 	}
 }
