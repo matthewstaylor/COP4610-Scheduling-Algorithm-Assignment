@@ -1,1 +1,9 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.Cpp.Platform.targets(57,5): error MSB8020: The build tools for v141 (Platform Toolset = 'v141') cannot be found. To build using the v141 build tools, please install v141 build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".
+﻿  cop4610SchedulerAssignment.cpp
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(262): warning C4018: '<': signed/unsigned mismatch
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(267): warning C4018: '<': signed/unsigned mismatch
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(277): warning C4018: '<': signed/unsigned mismatch
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(282): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(119): warning C4101: 'cpuU': unreferenced local variable
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(121): warning C4101: 'avgTimeWaiting': unreferenced local variable
+c:\users\mtayl\cop4610-scheduling-algorithm-assignment\cop4610schedulerassignment\cop4610schedulerassignment.cpp(116): warning C4101: 'waitTime': unreferenced local variable
+  cop4610SchedulerAssignment.vcxproj -> C:\Users\mtayl\COP4610-Scheduling-Algorithm-Assignment\Debug\cop4610SchedulerAssignment.exe
