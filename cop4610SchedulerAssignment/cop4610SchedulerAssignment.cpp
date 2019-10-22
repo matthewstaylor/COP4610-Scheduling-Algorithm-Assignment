@@ -2,6 +2,7 @@
 //COP4610: Computer Operating Systems, Fall 2019
 //CPU Scheduler Programming Assignment
 
+#include "stdafx.h"
 #include <iostream>
 #include <list>
 #include <vector>
@@ -107,6 +108,7 @@ void fcfs::initiateScheduler() {
 
 int main() {
 	int k = 0;
+	int y = 0;
 	fcfs processor;
 	int waitingTimes[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	int finalWaitingTimes[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -120,99 +122,100 @@ int main() {
 	double totalTimeWaiting = 0;
 	double avgTimeWaiting;
 	deque<int>sjfProcesses;
-	deque<int> printTemp;
+	deque<int>sjfProcessOrder;
+	deque<int>printTemp;
 	/*
 	{
 
 	for (int p = 0; p < processQueue.size(); p++) {
-		readyQueue[p] = processQueue[p].front();
+	readyQueue[p] = processQueue[p].front();
 	}
 
 	while (processQueue.size() > 0) {
-		for (int i = 0; i < processQueue.size(); i++) {
+	for (int i = 0; i < processQueue.size(); i++) {
 
-			if (waitingTimes[i] == 0) {
-				readyQueue[i] = processQueue[i].front();
-			}
-			if (waitingTimes[i] < 0) {
-				waitingTimes[i] = 0;
-				readyQueue[i] = 0;
-			}
-			else if (waitingTimes[i] > 0) {
-				cout << "P" << i+1 << " aint ready bc wait is: " << waitingTimes[i] << endl;
-				readyQueue[i] = -1;
-				finalWaitingTimes[i] = finalWaitingTimes[i] + waitingTimes[i];
-				i++;
-				if (i == processQueue.size()) {
-					i = 0;
-					cout << endl;
-				}
-			}
-			////PROGRAM OUTPUT - DISPLAYED FOR EACH CONTEXT SWITCH
-			cout << "--------------------------------------------------------------" << endl;
-			cout << "CONTEXT SWITCH" << endl;
-			cout << "--------------------------------------------------------------" << "\n\n";
+	if (waitingTimes[i] == 0) {
+	readyQueue[i] = processQueue[i].front();
+	}
+	if (waitingTimes[i] < 0) {
+	waitingTimes[i] = 0;
+	readyQueue[i] = 0;
+	}
+	else if (waitingTimes[i] > 0) {
+	cout << "P" << i+1 << " aint ready bc wait is: " << waitingTimes[i] << endl;
+	readyQueue[i] = -1;
+	finalWaitingTimes[i] = finalWaitingTimes[i] + waitingTimes[i];
+	i++;
+	if (i == processQueue.size()) {
+	i = 0;
+	cout << endl;
+	}
+	}
+	////PROGRAM OUTPUT - DISPLAYED FOR EACH CONTEXT SWITCH
+	cout << "--------------------------------------------------------------" << endl;
+	cout << "CONTEXT SWITCH" << endl;
+	cout << "--------------------------------------------------------------" << "\n\n";
 
-			cout << "Current execution time: " << totalProcessingTime << endl;
-			cout << "P" << i + 1 << ": " << processQueue[i].front() << endl;
-			cout << "Ready queue, burst time: " << endl;
-			for (int k = 0; k < 8; k++) {
-				if (readyQueue[k] >= 0) {
-					cout << "P" << k + 1 << ": " << readyQueue[k] << endl;
-				}
-			}
-			cout << "Processes in I/O, burst time: " << endl;
-			for (int a = 0; a < 8; a++) {
-				if (waitingTimes[a] > 0) {
-					cout << "P" << a + 1 << ": " << waitingTimes[a] << endl;
-				}
-			}
-			//////////////////////////////////////////////////////
+	cout << "Current execution time: " << totalProcessingTime << endl;
+	cout << "P" << i + 1 << ": " << processQueue[i].front() << endl;
+	cout << "Ready queue, burst time: " << endl;
+	for (int k = 0; k < 8; k++) {
+	if (readyQueue[k] >= 0) {
+	cout << "P" << k + 1 << ": " << readyQueue[k] << endl;
+	}
+	}
+	cout << "Processes in I/O, burst time: " << endl;
+	for (int a = 0; a < 8; a++) {
+	if (waitingTimes[a] > 0) {
+	cout << "P" << a + 1 << ": " << waitingTimes[a] << endl;
+	}
+	}
+	//////////////////////////////////////////////////////
 
-			if (processQueue[i].front() < 0) {
-				cout << endl << "!--------------- Process " << processQueue[i].front() * -1 << " complete. ----------------------!" << endl;
-				if (processQueue.size() == 1) {
-					processQueue.erase(processQueue.begin() + i);
-					break;
-				}
-				else {
-					processQueue.erase(processQueue.begin() + i);
-					if (i >= processQueue.size()) {
-						break;
-					}
-				}			
-			}
-			if (processQueue[i].size() < 2) {
-				break;
-			}
-			processingTime = processQueue[i].front();
-			totalProcessingTime = totalProcessingTime + processingTime;
-			processQueue[i].pop_front();
-			waitTime = processQueue[i].front();
-			totalWaitTime = totalWaitTime + waitTime;
-			waitingTimes[i] = waitingTimes[i] + waitTime;
-			processQueue[i].pop_front();
+	if (processQueue[i].front() < 0) {
+	cout << endl << "!--------------- Process " << processQueue[i].front() * -1 << " complete. ----------------------!" << endl;
+	if (processQueue.size() == 1) {
+	processQueue.erase(processQueue.begin() + i);
+	break;
+	}
+	else {
+	processQueue.erase(processQueue.begin() + i);
+	if (i >= processQueue.size()) {
+	break;
+	}
+	}
+	}
+	if (processQueue[i].size() < 2) {
+	break;
+	}
+	processingTime = processQueue[i].front();
+	totalProcessingTime = totalProcessingTime + processingTime;
+	processQueue[i].pop_front();
+	waitTime = processQueue[i].front();
+	totalWaitTime = totalWaitTime + waitTime;
+	waitingTimes[i] = waitingTimes[i] + waitTime;
+	processQueue[i].pop_front();
 
-			for (int j = 0; j < processQueue.size(); j++) {
-				if (readyQueue[j] >= 0) {
-					readyQueue[j] = processQueue[j].front();
-				}
-				if (j == i) {
-					j++;
-				}
-				if (waitingTimes[i] == 0) {
-					readyQueue[i] = processQueue[i].front();
-				}
-				else if (waitingTimes[j] < 0) {
-					waitingTimes[j] = 0;
-				}
-				else if (waitingTimes[j] > 0) {
-					waitingTimes[j] = waitingTimes[j] - processingTime;
-				}
-			}
-		}
-		
-		cout << endl;
+	for (int j = 0; j < processQueue.size(); j++) {
+	if (readyQueue[j] >= 0) {
+	readyQueue[j] = processQueue[j].front();
+	}
+	if (j == i) {
+	j++;
+	}
+	if (waitingTimes[i] == 0) {
+	readyQueue[i] = processQueue[i].front();
+	}
+	else if (waitingTimes[j] < 0) {
+	waitingTimes[j] = 0;
+	}
+	else if (waitingTimes[j] > 0) {
+	waitingTimes[j] = waitingTimes[j] - processingTime;
+	}
+	}
+	}
+
+	cout << endl;
 	}
 
 	cout << "--------------------------------------------------------------" << endl;
@@ -220,17 +223,17 @@ int main() {
 	cout << "--------------------------------------------------------------" << "\n\n";
 
 	for (int k = 0; k < 8; k++) { //calculates total time any process had to wait to run because of I/O
-		totalTimeWaiting = finalWaitingTimes[k] + totalTimeWaiting;
+	totalTimeWaiting = finalWaitingTimes[k] + totalTimeWaiting;
 	}
 	totalTime = totalTimeWaiting + totalProcessingTime;
 	cout << "Total time needed to complete all 8 processes: " << totalProcessingTime << endl;
 
 	cpuU = totalProcessingTime / totalTime * 100;
 	cout << "CPU utilization - [%] (U): " << cpuU << "%" << endl;
-	
+
 	cout << "Waiting times for each process: " << endl;
 	for (int k = 0; k < 8; k++) { //calculates total time any process had to wait to run because of I/O
-		cout << "P" << k + 1 << ": " << finalWaitingTimes[k] << endl;
+	cout << "P" << k + 1 << ": " << finalWaitingTimes[k] << endl;
 	}
 
 	cout << "Average waiting time for all processes(Tw): " << totalTimeWaiting / 8 << endl;
@@ -240,7 +243,7 @@ int main() {
 
 
 
-	
+
 
 	}
 	*/
@@ -248,8 +251,6 @@ int main() {
 
 	for (int j = 0; j < processQueue.size(); j++) { //readies up first set of CPU bursts
 		sjfProcesses.push_back(processQueue[j].front());
-		cout << sjfProcesses[j] << endl;
-		processQueue[j].pop_front();
 		waitingTimes[j] = -100;
 	}
 	while (processQueue.size() > 0) {
@@ -258,19 +259,32 @@ int main() {
 		}
 		if (waitingTimes[k] == -100) {
 			cout << "";
+			waitingTimes[k] = 0;
 		}
 		else if (waitingTimes[k] <= 0) { //IO over, moving to ready queue
 			sjfProcesses.push_back(processQueue[k].front());
-			cout << "P" << processQueue[k].back() * -1 << " moving to ready queue." << endl;
+			sjfProcessOrder.push_back(processQueue[k].back() * -1);
+			cout << "P" << sjfProcessOrder.front() << " moving to ready queue." << endl;
 		}
 		else {
-			cout << "Process " << k + 1 << " is still waiting on I/O. Running next process." << endl;
+			cout << "Process " << processQueue[k].back() * -1 << " is still waiting on I/O. Running next process." << endl;
 		}
 		if (sjfProcesses.size() > 0) {
 			sort(sjfProcesses.begin(), sjfProcesses.begin() + sjfProcesses.size());
+			for (int z = 0; z < sjfProcesses.size(); z++) {
+				while (y < 8) {
+					if (sjfProcesses[z] == processQueue[y].front()) {
+						sjfProcessOrder.push_back(processQueue[y].back() * -1);
+					}
+					else {
+						y++;
+					}
+				}
+				y = 0;
+			}
 		}
 		else {
-			break;
+			//break;
 		}
 		////PROGRAM OUTPUT - DISPLAYED FOR EACH CONTEXT SWITCH
 		cout << "--------------------------------------------------------------" << endl;
@@ -278,27 +292,28 @@ int main() {
 		cout << "--------------------------------------------------------------" << "\n\n";
 
 		cout << "Current execution time: " << totalProcessingTime << endl;
-		cout << "P" << k + 1 << ": " << sjfProcesses[k] << endl;
+		cout << "P" << sjfProcessOrder[k] << ": " << sjfProcesses[k] << endl;
 		cout << "Ready queue, burst time: " << endl;
 		for (int b = 0; b < processQueue.size(); b++) {
 			if (sjfProcesses[b] >= 0) {
-				cout << "P" <<  processQueue[b].back() * -1 << ": " << sjfProcesses[b] << endl;
+				cout << "P" << sjfProcessOrder[b] << ": " << sjfProcesses[b] << endl;
 			}
 		}
 		cout << "Processes in I/O, burst time: " << endl;
 		for (int a = 0; a < 8; a++) {
 			if (waitingTimes[a] > 0) {
-				cout << "P" << a + 1 << ": " << waitingTimes[a] << endl;
+				cout << "P" << sjfProcessOrder[a] << ": " << waitingTimes[a] << endl;
 			}
 		}
 		//////////////////////////////////////////////////////
 		processingTime = sjfProcesses.front();
 		totalProcessingTime = totalProcessingTime + processingTime;
-		sjfProcesses.erase(sjfProcesses.begin(), sjfProcesses.begin() + k);
+		sjfProcesses.pop_front();
 		waitTime = sjfProcesses.front();
 		totalWaitTime = totalWaitTime + waitTime;
 		waitingTimes[k] = waitingTimes[k] + waitTime;
 		sjfProcesses.erase(sjfProcesses.begin(), sjfProcesses.begin() + k);
+		sjfProcessOrder.erase(sjfProcessOrder.begin(), sjfProcessOrder.begin() + k);
 		for (int j = 0; j < processQueue.size(); j++) {
 			if (j == k) {
 				j++;
@@ -344,101 +359,101 @@ int main() {
 
 	/*
 	while (processQueue.size() > 0) {
-		for (int j = 0; j < processQueue.size(); j++) {
-			sjfProcesses.at(j) = processQueue[j].front();
-		}
+	for (int j = 0; j < processQueue.size(); j++) {
+	sjfProcesses.at(j) = processQueue[j].front();
+	}
 
-		sort(sjfProcesses.begin(), sjfProcesses.begin() + sjfProcesses.size()); //sorts the ready queue by shortest CPU burst
+	sort(sjfProcesses.begin(), sjfProcesses.begin() + sjfProcesses.size()); //sorts the ready queue by shortest CPU burst
 
-		for (int i = 0; i < 8; i++) {
-			cout << sjfProcesses.at(i) << endl;
-		}
+	for (int i = 0; i < 8; i++) {
+	cout << sjfProcesses.at(i) << endl;
+	}
 
-		for (int i = 0; i < processQueue.size(); i++) {
+	for (int i = 0; i < processQueue.size(); i++) {
 
-			if (waitingTimes[i] == 0) {
-				readyQueue[i] = processQueue[i].front();
-			}
-			if (waitingTimes[i] < 0) {
-				waitingTimes[i] = 0;
-				readyQueue[i] = 0;
-			}
-			else if (waitingTimes[i] > 0) {
-				cout << "P" << i + 1 << " aint ready bc wait is: " << waitingTimes[i] << endl;
-				readyQueue[i] = -1;
-				finalWaitingTimes[i] = finalWaitingTimes[i] + waitingTimes[i];
-				i++;
-				if (i == processQueue.size()) {
-					i = 0;
-					cout << endl;
-				}
-			}
-			////PROGRAM OUTPUT - DISPLAYED FOR EACH CONTEXT SWITCH
-			cout << "--------------------------------------------------------------" << endl;
-			cout << "CONTEXT SWITCH" << endl;
-			cout << "--------------------------------------------------------------" << "\n\n";
+	if (waitingTimes[i] == 0) {
+	readyQueue[i] = processQueue[i].front();
+	}
+	if (waitingTimes[i] < 0) {
+	waitingTimes[i] = 0;
+	readyQueue[i] = 0;
+	}
+	else if (waitingTimes[i] > 0) {
+	cout << "P" << i + 1 << " aint ready bc wait is: " << waitingTimes[i] << endl;
+	readyQueue[i] = -1;
+	finalWaitingTimes[i] = finalWaitingTimes[i] + waitingTimes[i];
+	i++;
+	if (i == processQueue.size()) {
+	i = 0;
+	cout << endl;
+	}
+	}
+	////PROGRAM OUTPUT - DISPLAYED FOR EACH CONTEXT SWITCH
+	cout << "--------------------------------------------------------------" << endl;
+	cout << "CONTEXT SWITCH" << endl;
+	cout << "--------------------------------------------------------------" << "\n\n";
 
-			cout << "Current execution time: " << totalProcessingTime << endl;
-			cout << "P" << i + 1 << ": " << processQueue[i].front() << endl;
-			cout << "Ready queue, burst time: " << endl;
-			for (int k = 0; k < 8; k++) {
-				if (readyQueue[k] >= 0) {
-					cout << "P" << k + 1 << ": " << readyQueue[k] << endl;
-				}
-			}
-			cout << "Processes in I/O, burst time: " << endl;
-			for (int a = 0; a < 8; a++) {
-				if (waitingTimes[a] > 0) {
-					cout << "P" << a + 1 << ": " << waitingTimes[a] << endl;
-				}
-			}
-			//////////////////////////////////////////////////////
+	cout << "Current execution time: " << totalProcessingTime << endl;
+	cout << "P" << i + 1 << ": " << processQueue[i].front() << endl;
+	cout << "Ready queue, burst time: " << endl;
+	for (int k = 0; k < 8; k++) {
+	if (readyQueue[k] >= 0) {
+	cout << "P" << k + 1 << ": " << readyQueue[k] << endl;
+	}
+	}
+	cout << "Processes in I/O, burst time: " << endl;
+	for (int a = 0; a < 8; a++) {
+	if (waitingTimes[a] > 0) {
+	cout << "P" << a + 1 << ": " << waitingTimes[a] << endl;
+	}
+	}
+	//////////////////////////////////////////////////////
 
-			if (processQueue[i].front() < 0) {
-				cout << endl << "!--------------- Process " << processQueue[i].front() * -1 << " complete. ----------------------!" << endl;
-				if (processQueue.size() == 1) {
-					processQueue.erase(processQueue.begin() + i);
-					break;
-				}
-				else {
-					processQueue.erase(processQueue.begin() + i);
-					if (i >= processQueue.size()) {
-						break;
-					}
-				}
-			}
-			if (processQueue[i].size() < 2) {
-				break;
-			}
-			processingTime = processQueue[i].front();
-			totalProcessingTime = totalProcessingTime + processingTime;
-			processQueue[i].pop_front();
-			waitTime = processQueue[i].front();
-			totalWaitTime = totalWaitTime + waitTime;
-			waitingTimes[i] = waitingTimes[i] + waitTime;
-			processQueue[i].pop_front();
+	if (processQueue[i].front() < 0) {
+	cout << endl << "!--------------- Process " << processQueue[i].front() * -1 << " complete. ----------------------!" << endl;
+	if (processQueue.size() == 1) {
+	processQueue.erase(processQueue.begin() + i);
+	break;
+	}
+	else {
+	processQueue.erase(processQueue.begin() + i);
+	if (i >= processQueue.size()) {
+	break;
+	}
+	}
+	}
+	if (processQueue[i].size() < 2) {
+	break;
+	}
+	processingTime = processQueue[i].front();
+	totalProcessingTime = totalProcessingTime + processingTime;
+	processQueue[i].pop_front();
+	waitTime = processQueue[i].front();
+	totalWaitTime = totalWaitTime + waitTime;
+	waitingTimes[i] = waitingTimes[i] + waitTime;
+	processQueue[i].pop_front();
 
-			for (int j = 0; j < processQueue.size(); j++)
-			{
-				if (readyQueue[j] >= 0) {
-					readyQueue[j] = processQueue[j].front();
-				}
-				if (j == i) {
-					j++;
-				}
-				if (waitingTimes[i] == 0) {
-					readyQueue[i] = processQueue[i].front();
-				}
-				else if (waitingTimes[j] < 0) {
-					waitingTimes[j] = 0;
-				}
-				else if (waitingTimes[j] > 0) {
-					waitingTimes[j] = waitingTimes[j] - processingTime;
-				}
-			}
-		}
+	for (int j = 0; j < processQueue.size(); j++)
+	{
+	if (readyQueue[j] >= 0) {
+	readyQueue[j] = processQueue[j].front();
+	}
+	if (j == i) {
+	j++;
+	}
+	if (waitingTimes[i] == 0) {
+	readyQueue[i] = processQueue[i].front();
+	}
+	else if (waitingTimes[j] < 0) {
+	waitingTimes[j] = 0;
+	}
+	else if (waitingTimes[j] > 0) {
+	waitingTimes[j] = waitingTimes[j] - processingTime;
+	}
+	}
+	}
 
-		cout << endl;
+	cout << endl;
 	}
 
 	cout << "--------------------------------------------------------------" << endl;
@@ -446,7 +461,7 @@ int main() {
 	cout << "--------------------------------------------------------------" << "\n\n";
 
 	for (int k = 0; k < 8; k++) { //calculates total time any process had to wait to run because of I/O
-		totalTimeWaiting = finalWaitingTimes[k] + totalTimeWaiting;
+	totalTimeWaiting = finalWaitingTimes[k] + totalTimeWaiting;
 	}
 	totalTime = totalTimeWaiting + totalProcessingTime;
 	cout << "Total time needed to complete all 8 processes: " << totalProcessingTime << endl;
@@ -456,7 +471,7 @@ int main() {
 
 	cout << "Waiting times for each process: " << endl;
 	for (int k = 0; k < 8; k++) { //calculates total time any process had to wait to run because of I/O
-		cout << "P" << k + 1 << ": " << finalWaitingTimes[k] << endl;
+	cout << "P" << k + 1 << ": " << finalWaitingTimes[k] << endl;
 	}
 
 	cout << "Average waiting time for all processes(Tw): " << totalTimeWaiting / 8 << endl;
