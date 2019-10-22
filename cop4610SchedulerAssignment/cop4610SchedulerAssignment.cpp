@@ -5,7 +5,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
-#include <queue>
+#include <deque>
 #include <algorithm>
 
 using namespace std;
@@ -119,9 +119,8 @@ int main() {
 	double cpuU;
 	double totalTimeWaiting = 0;
 	double avgTimeWaiting;
-	queue<int>sjfProcesses;
-	queue<int> printTemp;
-	vector<int>readyTemp;
+	deque<int>sjfProcesses;
+	deque<int> printTemp;
 	/*
 	{
 
@@ -247,17 +246,31 @@ int main() {
 	*/
 	//SJF
 
+	for (int j = 0; j < processQueue.size(); j++) { //readies up first set of CPU bursts
+		sjfProcesses.push_back(processQueue[j].front());
+		cout << sjfProcesses[j] << endl;
+		processQueue[j].pop_front();
+		waitingTimes[j] = -100;
+	}
 	while (processQueue.size() > 0) {
 		if (k >= 8) {
 			k = 0;
 		}
-		if (waitingTimes[k] <= 0) { //IO over, moving to ready queue
-			sjfProcesses.push(processQueue[k].front());
-			processQueue[k].pop_front();
+		if (waitingTimes[k] == -100) {
+			cout << "";
+		}
+		else if (waitingTimes[k] <= 0) { //IO over, moving to ready queue
+			sjfProcesses.push_back(processQueue[k].front());
+			cout << "P" << processQueue[k].back() * -1 << " moving to ready queue." << endl;
 		}
 		else {
 			cout << "Process " << k + 1 << " is still waiting on I/O. Running next process." << endl;
-			k++;
+		}
+		if (sjfProcesses.size() > 0) {
+			sort(sjfProcesses.begin(), sjfProcesses.begin() + sjfProcesses.size());
+		}
+		else {
+			break;
 		}
 		////PROGRAM OUTPUT - DISPLAYED FOR EACH CONTEXT SWITCH
 		cout << "--------------------------------------------------------------" << endl;
@@ -265,14 +278,13 @@ int main() {
 		cout << "--------------------------------------------------------------" << "\n\n";
 
 		cout << "Current execution time: " << totalProcessingTime << endl;
-		cout << "P" << k + 1 << ": " << processQueue[k].front() << endl;
+		cout << "P" << k + 1 << ": " << sjfProcesses[k] << endl;
 		cout << "Ready queue, burst time: " << endl;
-		for (int k = 0; k < processQueue.size(); k++) {
-			if (sjfProcesses[k] >= 0) {
-				cout << "P" << k + 1 << ": " << sjfProcesses[k] << endl;
+		for (int b = 0; b < processQueue.size(); b++) {
+			if (sjfProcesses[b] >= 0) {
+				cout << "P" <<  processQueue[b].back() * -1 << ": " << sjfProcesses[b] << endl;
 			}
 		}
-
 		cout << "Processes in I/O, burst time: " << endl;
 		for (int a = 0; a < 8; a++) {
 			if (waitingTimes[a] > 0) {
@@ -280,28 +292,17 @@ int main() {
 			}
 		}
 		//////////////////////////////////////////////////////
-
-		if (sjfProcesses.size() > 0) {
-			for (int i = 0; i < sjfProcesses.size(); i++) {
-				readyTemp.push_back(sjfProcesses.front());
-				sjfProcesses.pop();
-			}
-			sort(readyTemp.begin(), readyTemp.begin() + readyTemp.size());
-			for (int j = 0; j < readyTemp.size(); j++) {
-				cout << readyTemp.front() << endl;
-				sjfProcesses.push(readyTemp.front());
-				readyTemp.erase(readyTemp.begin() + j);
-			}
-			processingTime = sjfProcesses.front();
-			totalProcessingTime = totalProcessingTime + processingTime;
-			sjfProcesses.pop();
-			waitTime = sjfProcesses.front();
-			totalWaitTime = totalWaitTime + waitTime;
-			waitingTimes[i] = waitingTimes[i] + waitTime;
-			sjfProcesses.pop();
-		}
-
+		processingTime = sjfProcesses.front();
+		totalProcessingTime = totalProcessingTime + processingTime;
+		sjfProcesses.erase(sjfProcesses.begin(), sjfProcesses.begin() + k);
+		waitTime = sjfProcesses.front();
+		totalWaitTime = totalWaitTime + waitTime;
+		waitingTimes[k] = waitingTimes[k] + waitTime;
+		sjfProcesses.erase(sjfProcesses.begin(), sjfProcesses.begin() + k);
 		for (int j = 0; j < processQueue.size(); j++) {
+			if (j == k) {
+				j++;
+			}
 			if (waitingTimes[j] < 0) {
 				waitingTimes[j] = 0;
 			}
@@ -309,6 +310,7 @@ int main() {
 				waitingTimes[j] = waitingTimes[j] - processingTime;
 			}
 		}
+		k++;
 	}
 
 
